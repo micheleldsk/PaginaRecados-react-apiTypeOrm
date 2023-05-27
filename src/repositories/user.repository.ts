@@ -1,24 +1,37 @@
+import { UserEntity } from "../database/entities";
+import { pgHelper } from "../database/pg-helper";
 import { User } from "../models";
 
 class UserRepository {
-    users: Array<User> = [];
 
-    addUser(user: User) {
-        this.users.push(user);
-
-        return 
+    async addUser(user: User) {
+        
+        const manager = pgHelper.client.manager
+        const newUser = manager.create(UserEntity, user)
+        
+        return await manager.save(newUser) 
     }
 
-    checkValidEmail(email: string) {
-        return this.users.some((user) => user.email === email)
+    async checkValidEmail(email: string) {
+        const manager = pgHelper.client.manager
+        const validEmail = await manager.findOne(UserEntity, {where:{email}})
+
+        return !!validEmail
     }
 
-    login(email: string, password: string) {
-        return this.users.find((user) => user.email === email && user.password === password);
+    async login(email: string, password: string) {
+        const manager = pgHelper.client.manager
+        const user = await manager.findOne(UserEntity, {where:{email, password}})
+                
+        return user 
+
     }
 
-    checkUserId(userId: string) {
-        return this.users.some((user) => user.id === userId)
+    async checkUserId(userId: string) {
+        const manager = pgHelper.client.manager
+        const user = await manager.findOne(UserEntity, {where:{id: userId}})
+                
+        return !!user
     }
 }
 

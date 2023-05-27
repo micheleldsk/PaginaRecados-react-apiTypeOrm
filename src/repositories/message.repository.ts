@@ -1,65 +1,74 @@
+import { MessageEntity } from "../database/entities";
+import { pgHelper } from "../database/pg-helper";
 import { Message } from "../models";
 
 class MessageRepository {
-    messages: Array<Message> = [];
 
-    addMessage(message: Message) {
-        this.messages.push(message);
+    async addMessage(message: Message) {
 
-        return 
+        const manager = pgHelper.client.manager
+        const newMessage = manager.create(MessageEntity, message)
+        
+        return await manager.save(newMessage) 
+
     }
 
-    getUserMessages(userId: string) {
-        const userMessages = this.messages.filter((msg) => msg.userId === userId);
+    async getUserMessages(userId: string) {
+        const manager = pgHelper.client.manager
+        const userMessages = await manager.find(MessageEntity, {where:{userId}});
 
         return userMessages
     }
 
     updateMessage(id: string, title?: string, description?: string) {
-        const message = this.messages.find((msg) => msg.id === id);
+        const manager = pgHelper.client.manager
 
             if(title) {
-                message!.title = title
+                manager.update(MessageEntity, {id}, {title})
             }
 
             if(description) {
-                message!.description = description
+                manager.update(MessageEntity, {id}, {description})
             }
         
 
-        return message
+        return
     }
 
-    toggleActiveStatus(id: string) {
-        const message = this.messages.find((msg) => msg.id === id);
-
-        message!.active = !message!.active
-
-        return message
+    async toggleActiveStatus(id: string) {
+        const manager = pgHelper.client.manager
+        const message = await manager.findOne(MessageEntity, {where:{id}});
+        manager.update(MessageEntity, {id}, {status:!message?.status})
+        
+        return
     }
 
-    searchByTitle(userId:string, filterText: string) {
-        const filteredMessages = this.messages.filter((message) => message.title.includes(filterText) && message.userId === userId)
+    async searchByTitle(userId:string, filterText: string) {
+        const manager = pgHelper.client.manager
+        const filteredMessages = await manager.findBy(MessageEntity, {userId, title: filterText})
 
         return filteredMessages
     }
 
-    searchByStatus(userId:string, active: boolean) {
-        const filteredMessages = this.messages.filter((message) => message.active === active && message.userId === userId)
+    async searchByStatus(userId:string, status: boolean) {
+        const manager = pgHelper.client.manager
+        const filteredMessages = await manager.findBy(MessageEntity, {userId, status})
 
         return filteredMessages
     }
     
     deleteMessage(id: string) {
-        const messageIndex = this.messages.findIndex((msg) => msg.id === id);
-
-        this.messages.splice(messageIndex, 1)
+        const manager = pgHelper.client.manager
+        manager.delete(MessageEntity, {id})
 
         return
     }
 
-    checkMessageId(messageId: string) {
-        return this.messages.some((message) => message.id === messageId)
+    async checkMessageId(messageId: string) {
+        const manager = pgHelper.client.manager
+        const message = await manager.findOne(MessageEntity, {where:{id: messageId}})
+                
+        return !!message
     }
 }
 

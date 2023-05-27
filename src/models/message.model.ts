@@ -2,7 +2,7 @@ import { v4 } from "uuid";
 
 export class Message {
     id: string;
-    active: boolean = true;
+    status: boolean = true;
 
     constructor(public title: string, public description: string, public userId: string) {
         this.id = v4();

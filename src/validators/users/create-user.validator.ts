@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { IDefaultResponse } from "../../shared/interfaces";
 import { CreateUserService } from "../../services/users";
 
-export const createUserValidator = (req: Request, res: Response, next: NextFunction) => {
+export const createUserValidator = async (req: Request, res: Response, next: NextFunction) => {
   const { name, email, password } = req.body
 
   if (!name) {
@@ -28,7 +28,7 @@ export const createUserValidator = (req: Request, res: Response, next: NextFunct
 
   const createUserService = new CreateUserService()
 
-  const emailIsRegistered = createUserService.checkValidEmail(email)
+  const emailIsRegistered = await createUserService.checkValidEmail(email)
 
   if (emailIsRegistered) {
     return res.status(400).json({

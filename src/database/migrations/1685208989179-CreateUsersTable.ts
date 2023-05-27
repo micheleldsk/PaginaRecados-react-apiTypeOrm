@@ -10,7 +10,7 @@ export class CreateUsersTable1685208989179 implements MigrationInterface {
                 type: "uuid",
                 isPrimary: true,
             },{
-                name: "nome",
+                name: "name",
                 type: "varchar",
                 length: "100",
                 isNullable: false
@@ -21,7 +21,7 @@ export class CreateUsersTable1685208989179 implements MigrationInterface {
                 isUnique: true,
                 isNullable: false 
             },{
-                name: "senha",
+                name: "password",
                 type: "varchar",
                 length: "100",
                 isUnique: true,

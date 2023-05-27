@@ -20,12 +20,12 @@ export class MessagesController {
       }
 
       
-      getUserMessages(req: Request, res: Response) {
+      async getUserMessages(req: Request, res: Response) {
         const { userId } = req.params;
         
         const getUserMessagesService = new GetUserMessagesService();
         
-        const userMessages = getUserMessagesService.execute(userId)
+        const userMessages = await getUserMessagesService.execute(userId)
         
         return res.status(200).json({
           success: true,
@@ -62,13 +62,13 @@ export class MessagesController {
           } as IDefaultResponse)
       }
 
-      searchByTitleMessages(req: Request, res: Response) {
+      async searchByTitleMessages(req: Request, res: Response) {
         const { title } = req.query;
         const { userId } = req.params;
 
         const searchTitleMessagesServices = new SearchTitleMessagesService();
 
-        const filteredMessages = searchTitleMessagesServices.execute(userId, title!.toString());
+        const filteredMessages = await searchTitleMessagesServices.execute(userId, title!.toString());
 
         return res.status(200).json({
           success: true,
@@ -77,7 +77,7 @@ export class MessagesController {
         
       }
 
-      searchByStatusMessages(req: Request, res: Response) {
+      async searchByStatusMessages(req: Request, res: Response) {
         const { active } = req.query;
         const { userId } = req.params;
 
@@ -85,7 +85,7 @@ export class MessagesController {
 
         const searchStatusMessagesServices = new SearchStatusMessagesService();
 
-        const filteredMessages = searchStatusMessagesServices.execute(userId, activeBoolean);
+        const filteredMessages = await searchStatusMessagesServices.execute(userId, activeBoolean);
 
         return res.status(200).json({
           success: true,

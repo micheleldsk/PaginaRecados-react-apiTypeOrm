@@ -21,12 +21,12 @@ export class CreateMessagesTable1685209720186 implements MigrationInterface {
                 isNullable: false 
             },
             {
-                name: "titulo",
+                name: "title",
                 type: "varchar",
                 length: "100",
                 isNullable: false
             },{
-                name: "descricao",
+                name: "description",
                 type: "varchar",
                 length: "300",
                 isNullable: false 
